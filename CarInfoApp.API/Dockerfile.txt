@@ -1,0 +1,23 @@
+# المرحلة الأولى: البناء
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# نسخ ملفات المشاريع واستعادة الحزم
+COPY CarInfoApp.API/CarInfoApp.API.csproj CarInfoApp.API/
+COPY CarInfoApp.Application/CarInfoApp.Application.csproj CarInfoApp.Application/
+COPY CarInfoApp.Domain/CarInfoApp.Domain.csproj CarInfoApp.Domain/
+COPY CarInfoApp.Infrastructure/CarInfoApp.Infrastructure.csproj CarInfoApp.Infrastructure/
+RUN dotnet restore CarInfoApp.API/CarInfoApp.API.csproj
+
+# نسخ الكود بالكامل والبناء
+COPY . .
+WORKDIR /src/CarInfoApp.API
+RUN dotnet publish -c Release -o /app/publish
+
+# المرحلة الثانية: التشغيل
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+
+EXPOSE 80
+ENTRYPOINT ["dotnet", "CarInfoApp.API.dll"]

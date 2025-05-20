@@ -1,3 +1,7 @@
+
+# url تشغيل  (https://localhost:7218/CarInfo)
+
+
 # المرحلة الأولى: البناء
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
@@ -21,3 +25,5 @@ COPY --from=build /app/publish .
 
 EXPOSE 80
 ENTRYPOINT ["dotnet", "CarInfoApp.API.dll"]
+  
+
